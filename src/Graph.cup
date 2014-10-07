@@ -1,0 +1,107 @@
+package hw02;
+
+/**
+ *  Graph.cup
+ *  
+ *  Generates a parser for a graph calculator
+ * 
+ *  @author Emma Strubell
+ *  COS397 - Chawathe
+ *  February 17, 2011
+ */
+
+import java_cup.runtime.*;
+
+action code {:
+	// initialize the GraphCalculator that will actually store graphs
+	// and perform calculations
+	GraphCalculator<String> gc = new GraphCalculator<String>();
+:};
+
+terminal String		IDENTIFIER;
+terminal String		ORDER;
+terminal			COMPLETE, PATH, CYCLE, WHEEL, STAR;
+terminal			EDGE, COMPLEMENT, DIRECT, CARTESIAN, STRONG, ODD, LEXICOGRAPHIC, SUM, JOIN;
+terminal			PRINT, EQUALS, LPAREN, RPAREN, LBR, RBR, SEMI, COMMA;
+
+non terminal					calculation, expression;
+non terminal	Graph<String>	term, named, anygraph, literal_desc, literal;
+
+precedence left 	COMPLEMENT;
+precedence left	 	DIRECT, CARTESIAN, STRONG, ODD, LEXICOGRAPHIC;
+precedence left	 	SUM, JOIN;
+
+calculation		::= expression calculation
+				|	expression
+				;
+
+expression		::= IDENTIFIER:gname EQUALS term:g SEMI
+					{: gc.addGraph(gname, g); :}
+				|	PRINT IDENTIFIER:gname SEMI
+					{: gc.print(gname); :}
+				;	
+
+term			::= term:g1 DIRECT anygraph:g2
+					{: RESULT = gc.directProduct(g1, g2); :}
+				|	term:g1 CARTESIAN anygraph:g2
+					{: RESULT = gc.cartesianProduct(g1, g2); :}
+				|	term:g1 STRONG anygraph:g2
+					{: RESULT = gc.strongProduct(g1, g2); :}
+				|	term:g1 ODD anygraph:g2
+					{: RESULT = gc.oddProduct(g1, g2); :}
+				|	term:g1 LEXICOGRAPHIC anygraph:g2
+					{: RESULT = gc.lexicographicProduct(g1, g2); :}
+				|	term:g1 SUM anygraph:g2
+					{: RESULT = gc.directSum(g1, g2); :}
+				|	term:g1 JOIN anygraph:g2
+					{: RESULT = gc.join(g1, g2); :}
+				|	COMPLEMENT anygraph:g
+					{: RESULT = gc.complement(g); :}
+				| 	anygraph:g
+					{: RESULT = g; :}
+				;
+
+named			::= COMPLETE ORDER:o
+					{: RESULT = gc.completeGraph(Integer.valueOf(o)); :}
+				| 	COMPLETE ORDER:o1 COMMA ORDER:o2
+					{: RESULT = gc.completeBipartiteGraph(Integer.valueOf(o1), Integer.valueOf(o2)); :}
+				| 	PATH	 ORDER:o
+					{: RESULT = gc.pathGraph(Integer.valueOf(o)); :}
+				| 	CYCLE	 ORDER:o
+					{: RESULT = gc.cycleGraph(Integer.valueOf(o)); :}
+				| 	WHEEL	 ORDER:o
+					{: RESULT = gc.wheelGraph(Integer.valueOf(o)); :}
+				|	STAR	 ORDER:o
+					{: RESULT = gc.starGraph(Integer.valueOf(o)); :}
+				;
+
+anygraph		::= LPAREN term:g RPAREN
+					{: RESULT = g; :}
+				|	named:g
+					{: RESULT = g; :}
+				|	LBR literal_desc:g RBR
+					{: RESULT = g; :}
+				|	IDENTIFIER:gname
+					{: RESULT = gc.graphs.get(gname); :}
+				;
+
+literal_desc	::= literal:g1 literal_desc:g2
+					{: g1.merge(g2); RESULT = g1; :}
+				|	literal:g
+					{:RESULT = g;:}
+				;
+				
+literal			::= IDENTIFIER:v1 EDGE IDENTIFIER:v2
+					{:
+						Graph<String> g = new Graph<String>();
+						g.addEdge(v1, v2);
+						RESULT = g;
+					:}
+				|	IDENTIFIER:v
+					{:
+						Graph<String> g = new Graph<String>();
+						g.addVertex(v);
+						RESULT = g;
+					:}
+				;
+

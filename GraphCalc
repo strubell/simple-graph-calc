@@ -1,0 +1,6 @@
+#! /bin/bash
+if [ $# = 2 ]; then
+	/etc/java-config-2/current-system-vm/bin/java -cp bin:/usr/share/javacup/lib/javacup-runtime.jar hw02/GraphCalc $1 $2
+else
+	/etc/java-config-2/current-system-vm/bin/java -cp bin:/usr/share/javacup/lib/javacup-runtime.jar hw02/GraphCalc
+fi

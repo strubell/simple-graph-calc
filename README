@@ -1,10 +1,3 @@
-simple-graph-calc
-=================
-
-A DSL and engine for manipulating graphs.
-
-TODO: Make a pom.xml, improve documentation (describe DSL), add features.
-
 To compile:
 -----------
 IMPORTANT: You must manually specify the location of your javacup-runtime classes. On my
@@ -20,5 +13,11 @@ To run:
 -----------
 After running 'make', simply execute './GraphCalc' at the command line to run the program.
 Use as specified in the homework assignment.
+
+Author:
+----------
+Emma Strubell
+COS397 - Chawathe
+February 17, 2011
 
  

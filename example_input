@@ -1,0 +1,8 @@
+G101 = .K3 (+) .K4 (+) .W7;
+print G101;
+G201 = .K5 (^) .K3;
+G301 = .P4 (o) .P4 --- .K1;
+G401 = .P4 (o) (.P4 --- .K1);
+print G201; print G301; print G401;
+G5 = [ a--b c--d e--f b--f d--f g ];
+G5 = G5 (+) G5; print G5;
